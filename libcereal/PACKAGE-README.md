@@ -1,7 +1,9 @@
-# libcereal - A C++ library
+# libcereal - A C++ serialization library
 
-This is a `build2` package for the [`<UPSTREAM-NAME>`](https://<UPSTREAM-URL>)
-C++ library. It provides <SUMMARY-OF-FUNCTIONALITY>.
+This is a `build2` package for the [`cereal`](https://uscilab.github.io/cereal)
+C++ library. It provides a header-only C++11 serialization library that
+takes arbitrary data types and reversibly turns them into different
+representations, such as compact binary encodings, XML, or JSON.
 
 
 ## Usage
@@ -10,25 +12,14 @@ To start using `libcereal` in your project, add the following `depends`
 value to your `manifest`, adjusting the version constraint as appropriate:
 
 ```
-depends: libcereal ^<VERSION>
+depends: libcereal ^1.3.2
 ```
 
 Then import the library in your `buildfile`:
 
 ```
-import libs = libcereal%lib{<TARGET>}
+import libs = libcereal%lib{cereal}
 ```
-
-
-## Importable targets
-
-This package provides the following importable targets:
-
-```
-lib{<TARGET>}
-```
-
-<DESCRIPTION-OF-IMPORTABLE-TARGETS>
 
 
 ## Configuration variables
@@ -36,7 +27,9 @@ lib{<TARGET>}
 This package provides the following configuration variables:
 
 ```
-[bool] config.libcereal.<VARIABLE> ?= false
+[bool] config.libcereal.thread_safe ?= false
 ```
 
-<DESCRIPTION-OF-CONFIG-VARIABLES>
+Enables mutex-based synchronization of cereal's internal shared/weak pointer
+tracking maps, corresponding to upstream's `THREAD_SAFE` CMake option. Off by
+default, matching upstream.
