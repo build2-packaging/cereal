@@ -1,16 +1,23 @@
 : 1
 name: libcereal
-version: 0.1.0-a.0.z
+version: 1.3.2-a.0.z
 type: lib,binless
 language: c++
-project: build2-cereal
-summary: cereal C++ library
-license: other: proprietary ; Not free/open source.
+project: cereal
+summary: C++ serialization library
+license: BSD-3-Clause AND Zlib ; Zlib applies to the vendored cereal/external/base64.hpp.
 description-file: README.md
 package-description-file: PACKAGE-README.md
-url: https://example.org/upstream
-email: upstream@example.org
-package-url: https://github.com/build2-packaging/build2-cereal
+url: https://uscilab.github.io/cereal
+doc-url: https://uscilab.github.io/cereal
+src-url: https://github.com/USCiLab/cereal
+email: cerealcpp@googlegroups.com
+package-url: https://github.com/build2-packaging/cereal
 package-email: packaging@build2.org ; Mailing list.
+topics: serialization, json, xml, binary
+requires: c++11
 depends: * build2 >= 0.18.0
 depends: * bpkg >= 0.18.0
+depends: librapidjson ^1.1.0
+depends: librapidxml ^1.13.0
+tests: libcereal-tests == $
