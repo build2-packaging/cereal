@@ -11,6 +11,11 @@ ixx{*}: extension = ipp
 txx{*}: extension = tpp
 cxx{*}: extension = cpp
 
+# Use mutexes to make cereal's shared_ptr/weak_ptr serialization map
+# thread-safe (upstream's THREAD_SAFE CMake option).
+#
+config [bool] config.libcereal.thread_safe ?= false
+
 # The test target for cross-testing (running tests under Wine, etc).
 #
 test.target = $cxx.target

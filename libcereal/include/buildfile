@@ -1,23 +1,53 @@
 intf_libs = # Interface dependencies.
-#import xxxx_libs += libhello%lib{hello}
+import intf_libs += librapidjson%lib{rapidjson} \
+                    librapidxml%lib{rapidxml}
 
-lib{cereal}: {hxx ixx txx}{**} $intf_libs
+# h{} covers RapidJSON proxy headers (.h).
+#
+# base64.hpp is a heavily modified version of Rene Nyffenegger's
+# cpp-base64 (https://github.com/ReneNyffenegger/cpp-base64), licensed
+# under the zlib License.
+#
+lib{cereal}: {hxx h ixx txx}{**} $intf_libs \
+             cereal/external/legal{LICENSE}@cereal/external/
 
-# Export options.
+# Build options.
 #
 out_pfx = [dir_path] $out_root/include/
 src_pfx = [dir_path] $src_root/include/
 
+cxx.poptions =+ "-I$out_pfx" "-I$src_pfx"
+
+if $config.libcereal.thread_safe
+{
+  cxx.poptions += -DCEREAL_THREAD_SAFE=1
+  if ($cxx.target.system != 'win32-msvc')
+    cxx.libs += -pthread
+}
+
+# Export options.
+#
 lib{cereal}:
 {
   cxx.export.poptions = "-I$out_pfx" "-I$src_pfx"
   cxx.export.libs = $intf_libs
 }
 
+if $config.libcereal.thread_safe
+{
+  lib{cereal}: cxx.export.poptions += -DCEREAL_THREAD_SAFE=1
+
+  if ($cxx.target.system != 'win32-msvc')
+    lib{cereal}: cxx.export.libs += -pthread
+}
+
+
 # Install recreating subdirectories.
 #
-{hxx ixx txx}{*}:
+{hxx h ixx txx}{*}:
 {
   install         = include/
   install.subdirs = true
 }
+
+cereal/external/legal{LICENSE}@cereal/external/: install = include/cereal/external/
