@@ -1,0 +1,15 @@
+: 1
+name: libcereal-tests
+version: 0.1.0-a.0.z
+type: exe
+language: c++
+project: build2-cereal
+summary: libcereal-tests C++ executable
+license: other: proprietary ; Not free/open source.
+description-file: README.md
+url: https://example.org/build2-cereal
+email: helmesjo@gmail.com
+#build-error-email: helmesjo@gmail.com
+depends: * build2 >= 0.18.0
+depends: * bpkg >= 0.18.0
+#depends: libhello ^1.0.0

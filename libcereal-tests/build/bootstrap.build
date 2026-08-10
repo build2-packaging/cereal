@@ -1,0 +1,6 @@
+project = libcereal-tests
+
+using version
+using config
+using install
+using dist
