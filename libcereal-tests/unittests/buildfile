@@ -9,6 +9,13 @@ import libs += doctest%lib{doctest}
 #   boost/*              requires Boost
 #   portability_test     32-bit portability harness
 #
+# map.hpp, multimap.hpp, unordered_map.hpp, and unordered_multimap.hpp
+# are patched (see .orig/.patch) to use random_value<int8_t> instead of
+# random_value<char> for int8_t map keys. On platforms where char is
+# unsigned (e.g. aarch64 Linux), the char form is a narrowing error
+# under Clang. Already fixed upstream in 2c647d87 but not in a tagged
+# release.
+#
 for t: cxx{**}
 {
   n = $name($t)

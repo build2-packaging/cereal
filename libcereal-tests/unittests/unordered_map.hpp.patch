@@ -1,0 +1,11 @@
+--- unordered_map.hpp.orig	2026-08-10 22:37:45
++++ unordered_map.hpp	2026-08-11 00:50:04
+@@ -54,7 +54,7 @@
+ 
+     std::unordered_map<int8_t, StructExternalSplit> o_esplunordered_map;
+     for(int j=0; j<100; ++j)
+-      o_esplunordered_map.insert({random_value<char>(gen),  { random_value<int>(gen), random_value<int>(gen) }});
++      o_esplunordered_map.insert({random_value<int8_t>(gen),  { random_value<int>(gen), random_value<int>(gen) }});
+ 
+     std::ostringstream os;
+     {

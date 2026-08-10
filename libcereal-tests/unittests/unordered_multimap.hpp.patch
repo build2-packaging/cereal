@@ -1,0 +1,11 @@
+--- unordered_multimap.hpp.orig	2026-08-10 22:37:45
++++ unordered_multimap.hpp	2026-08-11 00:50:04
+@@ -71,7 +71,7 @@
+     std::unordered_multimap<int8_t, StructExternalSplit> o_esplunordered_multimap;
+     for(int j=0; j<100; ++j)
+     {
+-      auto key = random_value<char>(gen);
++      auto key = random_value<int8_t>(gen);
+       o_esplunordered_multimap.insert({key,  { random_value<int>(gen), random_value<int>(gen) }});
+       o_esplunordered_multimap.insert({key,  { random_value<int>(gen), random_value<int>(gen) }});
+     }
