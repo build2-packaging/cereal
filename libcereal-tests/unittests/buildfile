@@ -1,6 +1,24 @@
-libs =
-#import libs += libhello%lib{hello}
+import libs = libcereal%lib{cereal}
+import libs += doctest%lib{doctest}
 
-exe{libcereal-tests}: {hxx ixx txx cxx}{**} $libs
+# Port of upstream unittests/. Each file defines its own main() via
+# DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN, so every test source becomes its
+# own executable.
+#
+# Unsupported:
+#   boost/*              requires Boost
+#   portability_test     32-bit portability harness
+#
+for t: cxx{**}
+{
+  n = $name($t)
+  ./: exe{test-$n}: $t {hxx h}{**} $libs
+}
 
-cxx.poptions =+ "-I$out_root" "-I$src_root"
+# --minimal: only print failing test cases (doctest still reports and
+# exits non-zero on failure; -q/--quiet would suppress that too).
+#
+exe{test-*}: test.arguments = --minimal
+
+if ($cxx.target.system != 'win32-msvc')
+  cxx.coptions += -Wno-deprecated-declarations
