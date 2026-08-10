@@ -1,34 +1,42 @@
-#include <sstream>
-#include <stdexcept>
+#include <cereal/archives/binary.hpp>
+#include <cereal/types/vector.hpp>
 
-#include <cereal/cereal.hpp>
+#include <sstream>
+#include <vector>
 
 #undef NDEBUG
 #include <cassert>
 
+struct point
+{
+  int x, y;
+
+  template <class Archive>
+  void serialize (Archive& ar)
+  {
+    ar (x, y);
+  }
+};
+
 int main ()
 {
   using namespace std;
-  using namespace cereal;
 
-  // Basics.
-  //
+  stringstream ss;
+
   {
-    ostringstream o;
-    say_hello (o, "World");
-    assert (o.str () == "Hello, World!\n");
+    cereal::BinaryOutputArchive oa (ss);
+    vector<point> ps {{1, 2}, {3, 4}};
+    oa (ps);
   }
 
-  // Empty name.
-  //
-  try
+  vector<point> ps;
   {
-    ostringstream o;
-    say_hello (o, "");
-    assert (false);
+    cereal::BinaryInputArchive ia (ss);
+    ia (ps);
   }
-  catch (const invalid_argument& e)
-  {
-    assert (e.what () == string ("empty name"));
-  }
+
+  assert (ps.size () == 2);
+  assert (ps[0].x == 1 && ps[0].y == 2);
+  assert (ps[1].x == 3 && ps[1].y == 4);
 }
