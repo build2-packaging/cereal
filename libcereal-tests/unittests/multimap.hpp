@@ -109,7 +109,7 @@ void test_multimap()
     { \
       auto const count = InMap.count( pair.first ); \
       CHECK_EQ( count, OutMap.count( pair.first ) ); \
-      auto find = InMap.find( pair.first ); \
+      auto find = InMap.lower_bound( pair.first ); \
       bool found = false; \
       for( size_t i = 0; i < count; ++i, ++find ) \
         found |= find->second == pair.second; \

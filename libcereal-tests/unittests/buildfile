@@ -1,9 +1,26 @@
 import libs = libcereal%lib{cereal}
 import libs += doctest%lib{doctest}
 
+# cxx.std is 'latest', 'experimental', or an edition, optionally
+# 'c++'/'gnu++'-prefixed (e.g. '17', 'c++17', 'gnu++20'). Extract the
+# edition number, normalizing '98' (the one edition where the number does
+# not sort chronologically) to below every other edition, and map
+# 'latest'/'experimental' (always at least as new as any edition) above
+# every other edition, so cpp17 below is a single comparison. This is
+# libcereal-tests' own standard, which is what actually governs whether
+# its cpp17/ sources can include <optional>/<variant> below -- libcereal
+# is binless and compiles nothing of its own, so its cxx.std is beside
+# the point here.
+#
+cxx_std_ed = $regex.replace($cxx.std, '^(c|gnu)\+\+', '')
+cxx_std_ed = ($cxx_std_ed == '98' ? '0' : $cxx_std_ed)
+cxx_std_ed = ($cxx.std == 'latest' || $cxx.std == 'experimental' ? 99 : [uint64] $cxx_std_ed)
+cpp17 = ($cxx_std_ed >= 17)
+
 # Port of upstream unittests/. Each file defines its own main() via
 # DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN, so every test source becomes its
-# own executable.
+# own executable. Each .cpp only includes its matching .hpp (which pulls
+# in common.hpp and doctest.h).
 #
 # Unsupported:
 #   boost/*              requires Boost
@@ -16,10 +33,25 @@ import libs += doctest%lib{doctest}
 # under Clang. Already fixed upstream in 2c647d87 but not in a tagged
 # release.
 #
-for t: cxx{**}
+# multimap.hpp is also patched so MULTIMAP_CHECK walks from lower_bound()
+# instead of find(). LLVM 22 libc++ find() may return any equivalent key,
+# so the count-sized walk misses values and increments past end().
+#
+for t: cxx{*}
 {
   n = $name($t)
-  ./: exe{test-$n}: $t {hxx h}{**} $libs
+  ./: exe{test-$n}: $t hxx{$n} hxx{common} h{doctest} $libs
+}
+
+# C++17 suite (std::optional, std::variant). Separate executables, same
+# as upstream's cpp17/ subdirectory. Built only when the imported library
+# was configured for C++17 or later.
+#
+for t: cxx{cpp17/*}
+{
+  n = $name($t)
+  ./: exe{test-$n}: include = $cpp17
+  exe{test-$n}: $t hxx{cpp17/$n} hxx{common} h{doctest} $libs
 }
 
 # --minimal: only print failing test cases (doctest still reports and
