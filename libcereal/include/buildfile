@@ -1,15 +1,17 @@
 intf_libs = # Interface dependencies.
-import intf_libs += librapidjson%lib{rapidjson} \
+import intf_libs += libcpp-base64%lib{cpp-base64} \
+                    librapidjson%lib{rapidjson} \
                     librapidxml%lib{rapidxml}
 
 # h{} covers RapidJSON proxy headers (.h).
 #
-# base64.hpp is a heavily modified version of Rene Nyffenegger's
-# cpp-base64 (https://github.com/ReneNyffenegger/cpp-base64), licensed
-# under the zlib License.
+# base64.hpp is a thin shim delegating to the libcpp-base64 dependency's
+# ::base64_encode/::base64_decode (unmodified upstream cpp-base64, by Rene
+# Nyffenegger), namespaced as cereal::base64::encode/decode to match what
+# archives/xml.hpp and archives/json.hpp expect. It is no longer vendored
+# now that a build2 package for cpp-base64 exists.
 #
-lib{cereal}: {hxx h ixx txx}{**} $intf_libs \
-             cereal/external/legal{LICENSE}@cereal/external/
+lib{cereal}: {hxx h ixx txx}{**} $intf_libs
 
 # Build options.
 #
@@ -49,5 +51,3 @@ if $config.libcereal.thread_safe
   install         = include/
   install.subdirs = true
 }
-
-cereal/external/legal{LICENSE}@cereal/external/: install = include/cereal/external/
