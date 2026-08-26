@@ -1,0 +1,8 @@
+: 1
+name: libcereal-tests
+version: 1.3.2
+type: exe
+language: c++
+project: cereal
+summary: C++ serialization library (tests)
+license: BSD-3-Clause
