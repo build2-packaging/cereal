@@ -1,6 +1,6 @@
 : 1
 name: libcereal-tests
-version: 1.3.2-a.0.z
+version: 1.3.2
 type: exe
 language: c++
 project: cereal
